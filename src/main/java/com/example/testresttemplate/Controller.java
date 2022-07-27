@@ -28,6 +28,8 @@ public class Controller {
         String url="https://api.thecatapi.com/v1/images/search";
         List<Gato> lista = restTemplate.getForObject(url,List.class);
         return lista;
+        //String urlImagen = lista.get(0).getUrl();
+        //return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(urlImagen)).build();
     }
 
     @GetMapping("/dog")

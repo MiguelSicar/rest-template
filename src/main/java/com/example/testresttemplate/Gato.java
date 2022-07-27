@@ -1,17 +1,15 @@
 package com.example.testresttemplate;
 
+import java.util.List;
+
 public class Gato {
     private String id;
     private String url;
     private int width;
     private int height;
 
-    private Gato(String id, String url, int width, int height) {
-        this.id = id;
-        this.url = url;
-        this.width = width;
-        this.height = height;
-    }
+    private List<String> breeds;
+
 
     private Gato() {
     }
@@ -48,6 +46,15 @@ public class Gato {
         this.height = height;
     }
 
+
+    public List<String> getBreeds() {
+        return breeds;
+    }
+
+    public void setBreeds(List<String> breeds) {
+        this.breeds = breeds;
+    }
+
     @Override
     public String toString() {
         return "Gato{" +
@@ -55,8 +62,7 @@ public class Gato {
                 ", url='" + url + '\'' +
                 ", width=" + width +
                 ", height=" + height +
+                ", breeds=" + breeds +
                 '}';
     }
-
-
 }
