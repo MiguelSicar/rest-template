@@ -6,14 +6,14 @@ public class Gato {
     private int width;
     private int height;
 
-    public Gato(String id, String url, int width, int height) {
+    private Gato(String id, String url, int width, int height) {
         this.id = id;
         this.url = url;
         this.width = width;
         this.height = height;
     }
 
-    public Gato() {
+    private Gato() {
     }
 
     public String getId() {
@@ -57,4 +57,6 @@ public class Gato {
                 ", height=" + height +
                 '}';
     }
+
+
 }

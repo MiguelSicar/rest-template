@@ -1,13 +1,18 @@
 package com.example.testresttemplate;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class Controller {
@@ -19,10 +24,19 @@ public class Controller {
     }
 
     @GetMapping("/gato")
-    public Object getGato(){
+    public List<Gato> getGato(){
         String url="https://api.thecatapi.com/v1/images/search";
-
-        Object object = restTemplate.getForObject(url,Object.class);
-        return object;
+        List<Gato> lista = restTemplate.getForObject(url,List.class);
+        return lista;
     }
+
+    @GetMapping("/dog")
+    public ResponseEntity<Void> getDog(){
+        String url="https://dog.ceo/api/breeds/image/random";
+        Dog dog = restTemplate.getForObject(url,Dog.class);
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(dog.getMessage())).build();
+    }
+
 }
+
+
