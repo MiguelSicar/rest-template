@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.util.Assert;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 public class TestApiSicarX {
@@ -15,16 +16,22 @@ public class TestApiSicarX {
     final String urlApi = "https://api.sicarx.com/account/v1/account";
     final TestRestTemplate restTemplate = new TestRestTemplate();
 
+    public ResponseEntity<ResponsePrueba> tipicalPostRequest(BodyObject bodyObject){
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Type", "application/json");
+        ResponseEntity<ResponsePrueba> response = restTemplate.exchange(urlApi, HttpMethod.POST, new HttpEntity<>(bodyObject, httpHeaders), ResponsePrueba.class);
+        return response;
+    }
+
     @Test
     public void uuidAlfabeticos() {
         BodyObject bodyTest = bodyObject;
         bodyTest.setUuid("quioopotyuajbhlkgg,nvbch");
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("Content-Type","application/json");
-        ResponseEntity<ResponsePrueba> response = restTemplate.exchange(urlApi, HttpMethod.POST, new HttpEntity<>(bodyTest,httpHeaders), ResponsePrueba.class);
+        ResponseEntity<ResponsePrueba> response = tipicalPostRequest(bodyTest);
 
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
         Assertions.assertEquals(5, response.getBody().getCode());
-        //Assertions.assertEquals("Account uuid with value quioopotyuajbhlkgg,nvbch is not a valid UUID",response.getMessage());
+        Assertions.assertEquals("Account uuid with value quioopotyuajbhlkgg,nvbch is not a valid UUID", response.getBody().getMessage());
 
     }
 
@@ -32,25 +39,23 @@ public class TestApiSicarX {
     public void uuidNumericos() {
         BodyObject bodyTest = bodyObject;
         bodyTest.setUuid("45675612222312");
-        try {
-            ResponsePrueba response = restTemplate.postForObject(urlApi, bodyTest, ResponsePrueba.class);
-            Assertions.assertEquals(5, response.getCode());
-            Assertions.assertEquals("Account uuid with value 45675612222312 is not a valid UUID", response.getMessage());
-        } catch (Exception exception) {
-        }
+        ResponseEntity<ResponsePrueba> response = tipicalPostRequest(bodyTest);
+
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        Assertions.assertEquals(5, response.getBody().getCode());
+        Assertions.assertEquals("Account uuid with value 45675612222312 is not a valid UUID", response.getBody().getMessage());
+
     }
 
     @Test
     public void uuidCaracteresEspeciales() {
         BodyObject bodyTest = bodyObject;
         bodyTest.setUuid("%^~~!!!@#&:;@%./");
+        ResponseEntity<ResponsePrueba> response = tipicalPostRequest(bodyTest);
 
-        //ResponsePrueba responsetry = restTemplate.postForObject(urlApi,bodyTest,ResponsePrueba.class);
-        //ResponseEntity<ResponsePrueba> response = restTemplate.postForEntity(urlApi,bodyTest,ResponsePrueba.class);
-
-
-        //Assertions.assertEquals(5,responsetry.getCode());
-        //Assertions.assertEquals("Account uuid with value %^~~!!!@#&:;@%./ is not a valid UUID",responsetry.getMessage());
+        Assertions.assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        Assertions.assertEquals(5,response.getBody().getCode());
+        Assertions.assertEquals("Account uuid with value %^~~!!!@#&:;@%./ is not a valid UUID",response.getBody().getMessage());
 
     }
 
